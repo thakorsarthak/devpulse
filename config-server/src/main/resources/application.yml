@@ -1,0 +1,29 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+
+  cloud:
+    config:
+      server:
+        # Native profile = reads config files from local filesystem
+        # We use this for local development
+        # In production this would point to a Git repo
+       native:
+         search-location: classpath:/configs
+
+  profiles:
+    active: native
+
+# Actuator - exposes health and info endpoints
+# We will add prometheus metrics here later
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,refresh
+  endpoint:
+    health:
+      show-details: always

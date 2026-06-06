@@ -1,0 +1,37 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: ai-service
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    consumer:
+      group-id: ai-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.devpulse.*"
+
+langchain4j:
+  ollama:
+    base-url: ${OLLAMA_BASE_URL}
+    model-name: llama3.2
+    timeout: 120s
+  chroma:
+    base-url: ${CHROMA_BASE_URL}
+    collection-name: devpulse-incidents
+
+# Resilience4j - circuit breaker config for Ollama calls
+# If Ollama is down, open circuit after 5 failures
+# Retry after 30 seconds
+resilience4j:
+  circuitbreaker:
+    instances:
+      ollama:
+        sliding-window-size: 10
+        failure-rate-thresold: 50
+        wait-duration-in-open-state: 30s
+        permitted-number-of-call-in-half-open-state: 3
