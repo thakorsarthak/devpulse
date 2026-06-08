@@ -11,8 +11,8 @@ spring:
         # Native profile = reads config files from local filesystem
         # We use this for local development
         # In production this would point to a Git repo
-       native:
-         search-location: classpath:/configs
+        native:
+          search-locations: classpath:/configs/
 
   profiles:
     active: native
