@@ -14,9 +14,9 @@
         <module name="auth-service" />
         <module name="analytics-service" />
         <module name="api-gateway" />
-        <module name="notification-service" />
         <module name="ai-service" />
         <module name="ingestion-service" />
+        <module name="notification-service" />
       </profile>
     </annotationProcessing>
   </component>

@@ -20,6 +20,9 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
 
+#Flyway is a database migration tool.
+#It helps you version, track, and automatically apply database schema changes in a controlled way.
+#Think of it like Git for your database schema.
   flyway:
     enabled: true
     locations: classpath:db/migration
