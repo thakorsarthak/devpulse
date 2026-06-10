@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+
+  # ================================================
+  # ZOOKEEPER
+  # Kafka needs Zookeeper for cluster coordination
+  # Think of it as Kafka's address book
+  # ================================================
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: devpulse-zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - devpulse-network
+
+  # ================================================
+  # KAFKA BROKER
+  # Single broker is fine for local development
+  # Production would have 3+ brokers for redundancy
+  # ================================================
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: devpulse-kafka
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
+      KAFKA_LOG_RETENTION_HOURS: 168
+    networks:
+      - devpulse-network
+
+  # ================================================
+  # REDIS
+  # Used by analytics-service for caching
+  # ================================================
+  redis:
+    image: redis:7.2-alpine
+    container_name: devpulse-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    networks:
+      - devpulse-network
+
+  # ================================================
+  # KAFKA UI (bonus - visual Kafka dashboard)
+  # Not on resume but incredibly useful for debugging
+  # Hit http://localhost:9000 to see topics and messages
+  # ================================================
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: devpulse-kafka-ui
+    ports:
+      - "9000:8080"
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_CLUSTERS_0_NAME: devpulse-local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+    networks:
+      - devpulse-network
+
+networks:
+  devpulse-network:
+    driver: bridge
+
+volumes:
+  redis-data:
