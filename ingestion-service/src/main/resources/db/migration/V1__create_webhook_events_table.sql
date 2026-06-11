@@ -10,15 +10,15 @@
 
 CREATE TABLE webhook_events(
     id                      BIGSERIAL PRIMARY KEY,
-    event_type              VARCHAR(1OO) NOT NULL,
+    event_type              VARCHAR(100) NOT NULL,
     repository_name         VARCHAR(255) NOT NULL,
     repository_full_name    VARCHAR(255) NOT NULL,
     sender_login            VARCHAR(255),
     delivery_id             VARCHAR(255) UNIQUE,
     raw_payload             JSONB NOT NULL,
     processed               BOOLEAN NOT NULL DEFAULT FALSE,
-    kafka_published BOOLEAN NOT NULL DEFAULT FALSE,
-    created_at      TIMESTAMP NOT NULL DEFAULT NOW()
+    kafka_published         BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at              TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 -- Index for fast queries by repository
@@ -30,22 +30,20 @@ CREATE INDEX idx_webhook_events_unprocessed
     ON webhook_events(processed) WHERE processed = FALSE;
 
 
--- V1: Error logs table
--- Apps send error logs to ingestion-service for AI analysis
-CREATE TABLE error_logs (
-                            id              BIGSERIAL PRIMARY KEY,
-                            service_name    VARCHAR(255) NOT NULL,
-                            environment     VARCHAR(50) NOT NULL DEFAULT 'production',
-                            error_message   TEXT NOT NULL,
-                            stack_trace     TEXT,
-                            severity        VARCHAR(50) NOT NULL DEFAULT 'ERROR',
-                            resolved        BOOLEAN NOT NULL DEFAULT FALSE,
-                            ai_analyzed     BOOLEAN NOT NULL DEFAULT FALSE,
-                            created_at      TIMESTAMP NOT NULL DEFAULT NOW()
+ --- V1: Error logs table
+ --- Apps send error logs to ingestion-service for AI analysis
+CREATE TABLE error_logs(
+    id              BIGSERIAL PRIMARY KEY ,
+    service_name    VARCHAR(255) NOT NULL ,
+    environment     VARCHAR(50) NOT NULL DEFAULT 'production',
+    error_message   TEXT NOT NULL ,
+    stack_trace     TEXT,
+    severity        VARCHAR(50) NOT NULL DEFAULT 'ERROR',
+    resolved        BOOLEAN NOT NULL DEFAULT FALSE,
+    ai_analyzed     BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at      TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX idx_error_logs_service
-    ON error_logs(service_name);
+CREATE INDEX  idx_error_logs_service ON error_logs(service_name);
 
-CREATE INDEX idx_error_logs_unanalyzed
-    ON error_logs(ai_analyzed) WHERE ai_analyzed = FALSE;
+CREATE INDEX  idx_error_logs_unanalyzed ON error_logs(ai_analyzed) WHERE ai_analyzed = FALSE;

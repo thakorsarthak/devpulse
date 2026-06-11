@@ -53,6 +53,17 @@
             <groupId>io.github.resilience4j</groupId>
             <artifactId>resilience4j-spring-boot3</artifactId>
         </dependency>
+        <!-- Swagger -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+        </dependency>
+
+        <!-- Jackson for JSON parsing of webhook payloads -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

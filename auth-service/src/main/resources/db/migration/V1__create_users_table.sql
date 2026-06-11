@@ -32,7 +32,7 @@ CREATE TABLE users(
 );
 
 -- Index on email for fast login lookups
-CREATE  INDEX idx_unsers_email ON users(email);
+CREATE  INDEX idx_users_email ON users(email);
 
 -- Index for github_id for fast OAuth lookups
 CREATE INDEX idx_users_github_id ON users(github_id);
