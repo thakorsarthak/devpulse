@@ -39,7 +39,6 @@ public class IngestionKafkaProducer {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;  //Spring's helper class for talking to Kafka.
 
-
     public void publishPushEvent(PushEventMessage message){
 
         /*Kafka sends messages asynchronously that's why CompletableFuture*/

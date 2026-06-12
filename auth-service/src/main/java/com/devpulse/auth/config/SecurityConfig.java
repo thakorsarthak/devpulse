@@ -44,7 +44,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
 
         http
-                // disable CSRF - not needed for statless JWT apis
+                // disable CSRF - not needed for stateless JWT apis
                 .csrf(AbstractHttpConfigurer::disable)
 
                 // stateless session - no httpsession created ever

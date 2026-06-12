@@ -54,7 +54,7 @@ public class GatewayConfig {
 
         source.registerCorsConfiguration("/**",config);
 
-        //CorswebFilter is WebFlux filter which is belongs to SPRING WEBFLUX (Reactive)
+        //CorsWebFilter is WebFlux filter which is belongs to SPRING WEBFLUX (Reactive)
         return new CorsWebFilter(source);
 
     }
