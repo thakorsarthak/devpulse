@@ -42,7 +42,6 @@ public class IngestionKafkaProducer {
     public void publishPushEvent(PushEventMessage message){
 
         /*Kafka sends messages asynchronously that's why CompletableFuture*/
-
         CompletableFuture<SendResult<String,Object>> future =
                 kafkaTemplate.send(
                         PUSH_TOPIC,

@@ -61,7 +61,7 @@ public class ErrorLogService {
         log.info("Saved error log for service: {} severity: {}",
                 serviceName, severity);
 
-        // check erro count for this service
+        // check error count for this service
         long unresolvedCount = errorLogRepository.countByServiceNameAndResolvedFalse(serviceName);
 
 
@@ -81,7 +81,6 @@ public class ErrorLogService {
         }
 
         return  saved;
-
 
     }
 }
