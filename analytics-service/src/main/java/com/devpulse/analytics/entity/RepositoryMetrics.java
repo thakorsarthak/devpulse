@@ -65,4 +65,5 @@ public class RepositoryMetrics {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
 }
