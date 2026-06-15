@@ -13,7 +13,7 @@ public interface RepositoryMetricsRepository extends JpaRepository<RepositoryMet
 
     Optional<RepositoryMetrics> findByRepositoryFullName(String repositoryFullName);
 
-    List<RepositoryMetrics> findAllByOrderByLastPushedAtDesc();
+    List<RepositoryMetrics> findAllByOrderByLastPushAtDesc();
 
     List<RepositoryMetrics> findTop10ByOrderByTotalCommitsDesc();
 

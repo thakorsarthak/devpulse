@@ -18,12 +18,12 @@ import java.time.Duration;
 @Configuration
 public class RedisConfig {
 
-
     /**  create the template and give it the connection*/
     @Bean
     public RedisTemplate<String, Object> redisTemplate (RedisConnectionFactory connectionFactory){
 
         RedisTemplate<String , Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
 
         // Use String serializer for keys
         template.setKeySerializer( new StringRedisSerializer());
@@ -42,6 +42,7 @@ public class RedisConfig {
 
 
     /**Meaning: "Use this Redis connection and apply these defaults to all caches"*/
+    @Bean
     public RedisCacheManager  cacheManager(RedisConnectionFactory connectionFactory){
 
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()

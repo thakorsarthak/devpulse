@@ -8,10 +8,12 @@ import com.devpulse.analytics.repository.RepositoryMetricsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Analytics service - processes push events and serves metrics.
@@ -29,6 +31,7 @@ import java.time.LocalDateTime;
  * First call hits PostgreSQL, result stored in Redis.
  * Subsequent calls within TTL window → served from Redis.
  * PostgreSQL never sees repeated identical queries.
+ *
  */
 @Service
 @Slf4j
@@ -37,6 +40,11 @@ public class AnalyticsService {
 
     private final RepositoryMetricsRepository metricsRepository;
     private final PushActivityRepository  pushActivityRepository;
+
+
+    /** "repository-metrics" is the name of the cache bucket
+     *  "#message.repositoryFullName" uses SpEL to uniquely map the cache entry to the method parameter
+     *  */
 
     @Transactional
     @CacheEvict(value = "repository-metrics" , key = "#message.repositoryFullName")
@@ -67,7 +75,6 @@ public class AnalyticsService {
 
 
         // Increment Counters
-
         metrics.setTotalPushes(metrics.getTotalPushes() + 1);
         metrics.setTotalCommits(metrics.getTotalCommits()
                 + (message.getCommitCount() != null ? message.getCommitCount() : 0));
@@ -87,4 +94,26 @@ public class AnalyticsService {
                 message.getRepositoryFullName(),
                 metrics.getTotalCommits());
     }
+
+    @Cacheable(value = "repository-metrics" , key = "#repositoryFullName")
+    public RepositoryMetrics getRepositoryMetrics(String repositoryFullName){
+        return metricsRepository.findByRepositoryFullName(repositoryFullName)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "No metrics found for: " + repositoryFullName));
+    }
+
+    @Cacheable("all-repository-metrics")
+    public List<RepositoryMetrics> getAllRepositoryMetrics(){
+        return metricsRepository.findAllByOrderByLastPushAtDesc();
+    }
+
+    public List<RepositoryMetrics> getTopRepositories(){
+        return metricsRepository.findTop10ByOrderByTotalCommitsDesc();
+    }
+
+    public List<PushActivity> getRecentActivity(String repositoryFullName){
+        return pushActivityRepository
+                .findByRepositoryFullNameOrderByPushedAtDesc(repositoryFullName);
+    }
+
 }
