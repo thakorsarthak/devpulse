@@ -1,6 +1,4 @@
 package com.devpulse.gateway.filter;
-
-
 /*This logs every request passing through the gateway — path, method, response time.*/
 
 import lombok.extern.slf4j.Slf4j;

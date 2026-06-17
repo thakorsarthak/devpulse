@@ -15,6 +15,15 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 
+/**
+ * Redis configuration.
+ *
+ * WHY CUSTOM SERIALIZER:
+ * Default Redis serializer uses Java serialization — binary format,
+ * not human-readable, breaks if class structure changes.
+ * JSON serialization means you can inspect cache values in
+ * Redis CLI and they survive class refactoring.
+ */
 @Configuration
 public class RedisConfig {
 

@@ -15,6 +15,22 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Kafka consumer configuration.
+ *
+ * WHY EXPLICIT CONSUMER CONFIG OVER AUTO-CONFIGURATION:
+ * Spring Boot auto-configures Kafka consumers from properties.
+ * Explicit config gives us control over:
+ * - Type mapping (which JSON maps to which class)
+ * - Trusted packages (security - only deserialize our classes)
+ * - Concurrency (how many threads process messages)
+ *
+ * WHY setConcurrency(3):
+ * 3 threads = matches our 3 partitions on push.received topic.
+ * One thread per partition = maximum parallelism.
+ * More threads than partitions = idle threads (waste).
+ * Fewer threads than partitions = under-utilization.
+ */
 @Configuration
 public class KafkaConsumerConfig {
 

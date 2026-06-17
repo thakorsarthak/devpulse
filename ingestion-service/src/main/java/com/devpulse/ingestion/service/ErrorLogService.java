@@ -71,6 +71,7 @@ public class ErrorLogService {
                     .errorLogId(saved.getId())
                     .serviceName(serviceName)
                     .environment(environment)
+                    .errorMessage(errorMessage)
                     .stackTrace(stackTrace)
                     .severity(severity)
                     .detectedAt(LocalDateTime.now())

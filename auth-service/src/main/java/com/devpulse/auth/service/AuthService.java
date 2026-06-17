@@ -102,6 +102,7 @@ public class AuthService {
                 .role(user.getRole())
                 .build();
     }
+
     public TokenValidationResponse validateToken(String token) {
         if (!tokenProvider.validateToken(token)) {
             return TokenValidationResponse.builder()

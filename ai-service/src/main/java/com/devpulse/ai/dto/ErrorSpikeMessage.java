@@ -1,4 +1,4 @@
-package com.devpulse.ingestion.dto;
+package com.devpulse.ai.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * Message published to Kafka topic: error.spike.detected
- * Consumed by ai-service for RAG analysis.
+ * It is same as ingestion-service's ErrorSpikeMessage exactly.
+ * Field names must match for Kafka JSON deserialization to work.
  */
 @Data
 @Builder

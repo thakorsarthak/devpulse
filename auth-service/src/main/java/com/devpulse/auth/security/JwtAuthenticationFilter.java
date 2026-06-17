@@ -61,13 +61,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String email = tokenProvider.getEmailFromToken(token);
             String role = tokenProvider.getRoleFromToken(token);
 
-            // build authencition object with role as granted authorities
+            // build authentication object with role as granted authorities
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
                             email,
                             null,
                             List.of(new SimpleGrantedAuthority(role)));
-
             /** Spring Security understands permissions through GrantedAuthority. So */
 
             // Store in securityContext - marks this request as authenticated

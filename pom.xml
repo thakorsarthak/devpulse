@@ -133,6 +133,14 @@
                 <version>${langchain4j.version}</version>
             </dependency>
 
+            <!-- LangChain4j ONNX embedding model -->
+
+            <dependency>
+                <groupId>dev.langchain4j</groupId>
+                <artifactId>langchain4j-embeddings-all-minilm-l6-v2</artifactId>
+                <version>${langchain4j.version}</version>
+            </dependency>
+
             <!-- PostgreSQL Driver -->
             <dependency>
                 <groupId>org.postgresql</groupId>

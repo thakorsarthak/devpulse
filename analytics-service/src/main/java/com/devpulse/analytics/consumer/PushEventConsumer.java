@@ -11,6 +11,28 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
+/**
+ * Kafka consumer for push events.
+ *
+ * WHY @KafkaListener:
+ * Spring manages the consumer lifecycle — connection,
+ * offset management, deserialization, error handling.
+ * We just write the business logic.
+ *
+ * WHY group-id = analytics-group:
+ * Consumer groups allow multiple instances of analytics-service to share the work.
+ * Kafka distributes partitions across group members.
+ * Scale to 3 instances = each handles one partition of the 3-partition topic.
+ *
+ * WHY LOG OFFSET AND PARTITION:
+ * In production debugging, knowing exactly which partition
+ * and offset an event came from is critical for tracing
+ * message processing issues.
+ *
+ * Interview gold: "Consumer groups are how Kafka enables
+ * horizontal scaling of consumers. Add more instances,
+ * Kafka rebalances partitions automatically."
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
