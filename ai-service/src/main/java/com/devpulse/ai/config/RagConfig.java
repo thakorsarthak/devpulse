@@ -1,14 +1,17 @@
 package com.devpulse.ai.config;
 
-
 import dev.langchain4j.data.segment.TextSegment;
+import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.embedding.onnx.allminilml6v2.AllMiniLmL6V2EmbeddingModel;
+import dev.langchain4j.model.ollama.OllamaChatModel;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.chroma.ChromaEmbeddingStore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.time.Duration;
 
 /**
  * RAG PIPELINE CONFIGURATION
@@ -41,18 +44,31 @@ public class RagConfig {
     @Value("${langchain4j.chroma.collection-name}")
     private String chromaCollectionName;
 
+
     @Bean
     public EmbeddingModel embeddingModel(){
-
         return new AllMiniLmL6V2EmbeddingModel();
     }
-
 
     @Bean
     public EmbeddingStore<TextSegment> embeddingStore(){
         return ChromaEmbeddingStore.builder()
                 .baseUrl(chromaBaseUrl)
-                .collectionName(chromaCollectionName).build();
+                .collectionName(chromaCollectionName)
+                .build();
     }
 
+    @Bean
+    public ChatLanguageModel chatModel(){
+
+        return OllamaChatModel.builder()
+                .baseUrl(ollamaBaseUrl)
+                .modelName(ollamaModelName)
+                .timeout(Duration.ofSeconds(120)) /** timeout stats : that how long your service waits
+                                                     for the model to respond before giving up */
+                .temperature(0.3)  // lower temperature = more focused
+                                   // less creative response
+                                   // important for technical analysis - we want accuracy , not creativity
+                .build();
+    }
 }
