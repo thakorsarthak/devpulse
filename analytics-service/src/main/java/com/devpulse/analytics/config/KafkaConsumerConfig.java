@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import java.util.HashMap;
@@ -46,10 +47,17 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG , bootstrapServer);
         props.put(ConsumerConfig.GROUP_ID_CONFIG , "analytics-group");
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG ,"earliest");
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG ,
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG , ErrorHandlingDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG , ErrorHandlingDeserializer.class);
+
+
+        // Tell ErrorHandlingDeserializer what the actual deserializers are
+        props.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS,
                 StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG ,
+        props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS,
                 JsonDeserializer.class);
+
+
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "com.devpulse.*");
         props.put(JsonDeserializer.KEY_DEFAULT_TYPE , PushEventMessage.class.getName());
         props.put(JsonDeserializer.USE_TYPE_INFO_HEADERS , false);

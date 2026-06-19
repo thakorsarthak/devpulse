@@ -29,9 +29,9 @@ import org.springframework.stereotype.Component;
  * and offset an event came from is critical for tracing
  * message processing issues.
  *
- * Interview gold: "Consumer groups are how Kafka enables
+ * Consumer groups are how Kafka enables
  * horizontal scaling of consumers. Add more instances,
- * Kafka rebalances partitions automatically."
+ * Kafka rebalances partitions automatically.
  */
 @Slf4j
 @Component
