@@ -5,14 +5,21 @@ import com.devpulse.auth.dto.request.LoginRequest;
 import com.devpulse.auth.dto.request.RegisterRequest;
 import com.devpulse.auth.dto.response.AuthResponse;
 import com.devpulse.auth.dto.response.TokenValidationResponse;
+import com.devpulse.auth.entity.ServiceRegistration;
+import com.devpulse.auth.entity.User;
+import com.devpulse.auth.repository.ServiceRegistrationRepository;
+import com.devpulse.auth.repository.UserRepository;
 import com.devpulse.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 /**
  * Auth controller - exposes authentication endpoints.
@@ -32,6 +39,17 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+
+    private final UserRepository userRepository;
+
+    private final ServiceRegistrationRepository serviceRegistrationRepository;
+
+
+    @Value("${notification.default.email:thakorsarthak2912@gmail.com}")
+    private String defaultAlertEmail;
+
+    @Value("${internal.service.secret}")
+    private String internalServiceSecret;
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
@@ -75,6 +93,71 @@ public class AuthController {
                 : authHeader;
 
         return ResponseEntity.ok(authService.validateToken(token));
+    }
+
+
+
+    @GetMapping("/service-owner")
+    @Operation(summary = "Get owner email for a registered service")
+    public ResponseEntity<Map<String, String>> getServiceOwner(
+            @RequestParam String serviceName ,
+            @RequestHeader(value = "X-Internal-Secret", required = false) String secret) {
+
+        if (!internalServiceSecret.equals(secret)) {
+            return ResponseEntity.status(403)
+                    .body(Map.of("error", "Forbidden - internal endpoint"));
+        }
+
+        return serviceRegistrationRepository
+                .findByServiceName(serviceName)
+                .map(reg -> ResponseEntity.ok(
+                        Map.of(
+                                "email", reg.getUser().getEmail(),
+                                "name", reg.getUser().getName(),
+                                "serviceName", serviceName
+                        )
+                ))
+                .orElse(ResponseEntity.ok(
+                        Map.of("email", defaultAlertEmail)
+                ));
+    }
+
+
+    @PostMapping("/register-service")
+    @Operation(summary = "Register a service under your account")
+    public ResponseEntity<Map<String, Object>> registerService(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestParam String serviceName,
+            @RequestParam(defaultValue = "production") String environment) {
+
+        String token = authHeader.startsWith("Bearer ")
+                ? authHeader.substring(7) : authHeader;
+
+        TokenValidationResponse validation =
+                authService.validateToken(token);
+
+        if (!validation.isValid()) {
+            return ResponseEntity.status(401)
+                    .body(Map.of("error", "Invalid token"));
+        }
+
+        User user = userRepository.findById(validation.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "User not found"));
+
+        ServiceRegistration registration = ServiceRegistration.builder()
+                .user(user)
+                .serviceName(serviceName)
+                .environment(environment)
+                .build();
+
+        serviceRegistrationRepository.save(registration);
+
+        return ResponseEntity.ok(Map.of(
+                "message", "Service registered successfully",
+                "serviceName", serviceName,
+                "owner", user.getEmail()
+        ));
     }
 
 }

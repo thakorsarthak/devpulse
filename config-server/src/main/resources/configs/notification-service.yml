@@ -26,3 +26,17 @@ spring:
           auth: true
           starttls:
             enable: true
+
+auth:
+  service:
+    url: "http://localhost:8081"
+
+notification:
+  email:
+    from: shopcapital9@gmail.com
+  default:
+    email: ${DEVELOPER_EMAIL:thakorsarthak2912@gmail.com}
+
+internal:
+  service:
+    secret: ${INTERNAL_SERVICE_SECRET:devpulse-internal-secret-change-in-prod}

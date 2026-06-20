@@ -60,6 +60,7 @@ public class SecurityConfig {
                                 "/auth/oauth2/**",
                                 "/actuator/health",
                                 "/actuator/info",
+                                "/auth/service-owner",
                                 // Swagger UI paths
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
