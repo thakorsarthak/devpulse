@@ -11,6 +11,11 @@ import org.springframework.stereotype.Component;
 /**
  *
  * Consumes AI analysis results and triggers email alerts.
+ *
+ * SIMPLEST work:
+ * No database, no caching, no complex business logic.
+ * Pure event consumer → notification sender.
+ * Single responsibility in its purest form.
  * */
 @Slf4j
 @Component

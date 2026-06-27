@@ -14,6 +14,7 @@
         <module name="auth-service" />
         <module name="analytics-service" />
         <module name="api-gateway" />
+        <module name="devpulse-client-starter" />
         <module name="ai-service" />
         <module name="ingestion-service" />
         <module name="notification-service" />
@@ -27,6 +28,7 @@
       <module name="api-gateway" options="-parameters" />
       <module name="auth-service" options="-parameters" />
       <module name="config-server" options="-parameters" />
+      <module name="devpulse-client-starter" options="-parameters" />
       <module name="ingestion-service" options="-parameters" />
       <module name="notification-service" options="-parameters" />
     </option>

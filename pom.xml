@@ -40,6 +40,7 @@
         <module>analytics-service</module>
         <module>ai-service</module>
         <module>notification-service</module>
+        <module>devpulse-client-starter</module>
     </modules>
 
 

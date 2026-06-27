@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.devpulse</groupId>
+        <artifactId>devpulse-parent</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>devpulse-client-starter</artifactId>
+    <name>DevPulse Client Starter</name>
+    <description>
+        Auto-configures global exception reporting to DevPulse
+        ingestion-service. Add this dependency to any Spring Boot app
+        to automatically ship unhandled exceptions to DevPulse.
+    </description>
+
+    <dependencies>
+
+        <!-- Spring Boot autoconfigure - required for @AutoConfiguration -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+
+        <!-- Spring Web - for @RestControllerAdvice and RestTemplate -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <!-- optional = true means consuming apps don't get this
+                 transitively unless they already have web on classpath -->
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Configuration processor - generates IDE autocomplete
+             for our custom devpulse.* properties -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Logback - for the custom appender -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- No spring-boot-maven-plugin here
+                 Starters are libraries, not executable JARs
+                 They don't need a main class -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
