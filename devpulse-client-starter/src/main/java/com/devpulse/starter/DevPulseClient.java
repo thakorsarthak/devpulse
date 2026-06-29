@@ -30,7 +30,7 @@ public class DevPulseClient {
     private final DevPulseProperties properties;
     private final RestTemplate restTemplate;
 
-    private  DevPulseClient(DevPulseProperties properties){
+    public DevPulseClient(DevPulseProperties properties){
         this.properties = properties;
         this.restTemplate = buildRestTemplate();
     }
