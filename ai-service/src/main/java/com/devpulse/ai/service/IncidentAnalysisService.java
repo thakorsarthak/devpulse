@@ -50,16 +50,27 @@ public class IncidentAnalysisService {
                 errorSpike.getServiceName());
 
         // step 1 : retrieve similar past incidents
-        List<String> similarIncident = retrievalService.
+        List<String> similarIncidents = retrievalService.
                 findSimilarIncident(
                         errorSpike.getErrorMessage(),
-                        errorSpike.getStackTrace());
+                        errorSpike.getStackTrace(),
+                        errorSpike.getServiceName());
+
+
+        // Step 1.5: Retrieve relevant source code (NEW)
+        List<String> relevantCode = retrievalService
+                .findRelevantSourceCode(errorSpike.getStackTrace(),
+                        errorSpike.getServiceName());
+
+        List<String> combinedContext = new java.util.ArrayList<>();
+        combinedContext.addAll(relevantCode);
+        combinedContext.addAll(similarIncidents);
 
         // step 2 : generate analysis (circuit breaker)
         String rawResponse = ollamaService.generateAnalysis(
                 errorSpike.getErrorMessage(),
                 errorSpike.getStackTrace(),
-                similarIncident);
+                combinedContext);
 
         //step 3 : parse structured response
         String explanation = extractSection(rawResponse,EXPLANATION_PATTERN , rawResponse);
@@ -75,7 +86,8 @@ public class IncidentAnalysisService {
             retrievalService.storeIncident(
                     errorSpike.getServiceName(),
                     errorSpike.getErrorMessage(),
-                    explanation);
+                    explanation,
+                    errorSpike.getServiceName());
         }
 
         //step 5: publish result

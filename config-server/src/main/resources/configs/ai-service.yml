@@ -18,8 +18,8 @@ spring:
 langchain4j:
   ollama:
     base-url: ${OLLAMA_BASE_URL}
-    model-name: llama3.2
-    timeout: 120s
+    model-name: qwen2.5-coder:7b
+    timeout: 400s
   chroma:
     base-url: ${CHROMA_BASE_URL}
     collection-name: devpulse-incidents

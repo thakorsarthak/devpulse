@@ -14,7 +14,7 @@ import java.util.List;
  *  WE Wraps Ollama LLM calls with circuit breaker protection
  *
  *  Why circuit Breaker cause:
- *  Ollama runs as a local process. if it fails , crashes , hangs, or the model isn't loaded ,
+ *  Qwen  runs as a local process. if it fails , crashes , hangs, or the model isn't loaded ,
  *  every call would hang for the full timeout (120 seconds configured)
  *  with that many incident will be queued , this creates a backlog and resources exhaustion
  *  WITHOUT CIRCUIT BREAKER: Error -> Ollama hangs -> Request hangs -> System slows down
@@ -45,7 +45,7 @@ public class OllamaAnalysisService {
 
         String prompt = buildPrompt(errorMessage , stackTrace , similarIncidents);
 
-        log.info("Sending prompt to Ollama llama3.2 for analysis");
+        log.info("Sending prompt to Ollama qwen2.5-coder:7b for analysis");
         String response = chatModel.generate(prompt);
         log.info("Received AI analysis response");
         return response;

@@ -47,16 +47,16 @@ public class DevPulseProperties {
      *
      * DevPulse server is down Without timeout Thread may hang forever.
      *
-     * With timeout thread Wait 2 seconds max.
+     * With timeout thread Wait 6 seconds max.
      */
-    private int connectTimeoutMs = 2000;
+    private int connectTimeoutMs = 6000;
 
     /**
      * Read timeout for HTTP calls to ingestion-service (ms).
      *
-     * thread waits for 3 seconds for result
+     * thread waits for 5 seconds for result
      */
-    private int readTimeoutMs = 3000;
+    private int readTimeoutMs = 5000;
 
     // Getters and setters
     public String getUrl() { return url; }

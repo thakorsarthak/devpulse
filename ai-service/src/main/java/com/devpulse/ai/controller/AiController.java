@@ -6,6 +6,7 @@ package com.devpulse.ai.controller;
 * directly without going through the full kafka pipeline
 * */
 
+import com.devpulse.ai.service.CodeIngestionService;
 import com.devpulse.ai.service.IncidentRetrievalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,6 +25,8 @@ public class AiController {
 
     private final IncidentRetrievalService retrievalService;
 
+    private final CodeIngestionService codeIngestionService;
+
     @PostMapping("/search-similar")
     @Operation(summary = "test semantic search against chromaDB")
     public ResponseEntity<List<String>> searchSimilar(
@@ -31,7 +34,7 @@ public class AiController {
 
 
         List<String> results = retrievalService.findSimilarIncident(request.get("errorMessage") ,
-                request.getOrDefault("stackTrace",""));
+                request.getOrDefault("stackTrace","") , request.get("serviceName"));
 
         return  ResponseEntity.ok(results);
     }
@@ -39,5 +42,22 @@ public class AiController {
     public ResponseEntity<Map<String, String>> health() {
         return ResponseEntity.ok(Map.of(
                 "status", "UP", "service", "ai-service"));
+    }
+
+    @PostMapping("/ingest-codebase")
+    @Operation(summary = "Embed a local codebase into ChromaDB for RAG context")
+    public ResponseEntity<Map<String, Object>> ingestCodebase(
+            @RequestBody Map<String, String> request) {
+
+        String repoPath = request.get("repoPath");
+        String repoName = request.getOrDefault("repoName", "unknown-repo");
+
+        int count = codeIngestionService.ingestCodebase(repoPath, repoName);
+
+        return ResponseEntity.ok(Map.of(
+                "status", "completed",
+                "filesIngested", count,
+                "repoName", repoName
+        ));
     }
 }
